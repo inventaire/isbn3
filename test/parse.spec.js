@@ -1,5 +1,5 @@
-const should = require('should')
-const { parse } = require('../isbn')
+import should from 'should'
+import { parse } from '../isbn.js'
 
 describe('parse', () => {
   it('returns an object with all the data when valid', () => {

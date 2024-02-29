@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-browserify ./isbn.js -s ISBN -o dist/isbn.js
+esbuild ./isbn.js --bundle --outfile=dist/isbn.min.js

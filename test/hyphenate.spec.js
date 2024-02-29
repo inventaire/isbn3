@@ -1,5 +1,5 @@
-const should = require('should')
-const { hyphenate } = require('../isbn')
+import should from 'should'
+import { hyphenate } from '../isbn.js'
 
 describe('hyphenate', () => {
   it('hyphenates ISBN10s', () => {
