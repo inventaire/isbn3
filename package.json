@@ -13,7 +13,8 @@
     "type": "git",
     "url": "git://github.com/inventaire/isbn3.git"
   },
-  "main": "./isbn.js",
+  "main": "dist/isbn.cjs",
+  "module": "dist/isbn.mjs",
   "type": "module",
   "bin": {
     "isbn": "./bin/isbn",
