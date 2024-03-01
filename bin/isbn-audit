@@ -1,35 +1,35 @@
 #!/usr/bin/env node
-const [ source ] = process.argv.slice(2)
-const audit = require('../lib/audit')
+const [source] = process.argv.slice(2);
+import {audit} from "../lib/audit.js";
 
-const outputIsbnsWithClues = isbns => {
+const outputIsbnsWithClues = (isbns) => {
   const isbnsWithClues = isbns
-    .map(isbn => audit(isbn))
-    .filter(auditData => auditData.clues.length > 0)
-    .map(auditData => JSON.stringify(auditData))
-    .join('\n')
-  if (isbnsWithClues.length > 0) process.stdout.write(isbnsWithClues + '\n')
-}
+    .map((isbn) => audit(isbn))
+    .filter((auditData) => auditData.clues.length > 0)
+    .map((auditData) => JSON.stringify(auditData))
+    .join("\n");
+  if (isbnsWithClues.length > 0) process.stdout.write(isbnsWithClues + "\n");
+};
 
 // Prevent logging an EPIPE error when piping the output
 // cf https://github.com/maxlath/wikidata-cli/issues/7
-process.stdout.on('error', err => {
-  if (err.code !== 'EPIPE' && err.code !== 'ERR_STREAM_DESTROYED' ) throw err
-})
+process.stdout.on("error", (err) => {
+  if (err.code !== "EPIPE" && err.code !== "ERR_STREAM_DESTROYED") throw err;
+});
 
 if (source != null) {
-  const data = audit(source)
-  console.log(JSON.stringify(data))
+  const data = audit(source);
+  console.log(JSON.stringify(data));
 } else {
-  let remaining = ''
+  let remaining = "";
   process.stdin
-  .on('data', buf => {
-    const parts = (remaining + buf.toString()).split('\n')
-    const isbns = parts.slice(0, -1)
-    remaining = parts.slice(-1)[0]
-    outputIsbnsWithClues(isbns)
-  })
-  .on('close', () => {
-    if (remaining.length > 0) outputIsbnsWithClues(remaining)
-  })
+    .on("data", (buf) => {
+      const parts = (remaining + buf.toString()).split("\n");
+      const isbns = parts.slice(0, -1);
+      remaining = parts.slice(-1)[0];
+      outputIsbnsWithClues(isbns);
+    })
+    .on("close", () => {
+      if (remaining.length > 0) outputIsbnsWithClues(remaining);
+    });
 }

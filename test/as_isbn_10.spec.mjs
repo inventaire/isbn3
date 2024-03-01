@@ -1,5 +1,5 @@
-const should = require('should')
-const { asIsbn10 } = require('../isbn')
+import { asIsbn10 } from '../isbn.js'
+import should from 'should'
 
 describe('asIsbn10', () => {
   it('converts ISBN13 to ISBN10', () => {

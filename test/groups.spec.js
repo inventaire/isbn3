@@ -1,5 +1,5 @@
-require('should')
-const { groups } = require('../isbn')
+import should from 'should'
+import { groups } from '../isbn.js'
 
 describe('groups', () => {
   it('should be the groups data object', () => {

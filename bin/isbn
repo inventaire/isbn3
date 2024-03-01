@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-let [ isbn, format ] = process.argv.slice(2)
+let [isbn, format] = process.argv.slice(2);
 
 const output = (message, code = 0) => {
-  if (code === 0) process.stdout.write(message)
-  else process.stderr.write(message)
-  process.exit(code)
-}
+  if (code === 0) process.stdout.write(message);
+  else process.stderr.write(message);
+  process.exit(code);
+};
 
 if (!isbn || isbn.length === 0) {
   output(`isbn <isbn> <format>
@@ -25,36 +25,36 @@ Formats:
 - 10: ISBN-10 without hyphen
 - 10h: ISBN-10 with hyphen
 - prefix, group, publisher, article, check, check10, check13: output ISBN part value
-- data: output all this data as JSON`)
+- data: output all this data as JSON`);
 }
 
-format = format || '13h'
+format = format || "13h";
 
-const source = isbn
-isbn = isbn.replace(/[^\dX]/g, '')
-const parse = require('../lib/parse')
-const audit = require('../lib/audit')
-const data = parse(isbn)
+const source = isbn;
+isbn = isbn.replace(/[^\dX]/g, "");
+import {parse} from "../lib/parse.js";
+import {audit} from "../lib/audit.js";
+const data = parse(isbn);
 if (data) {
-  if (format === '13') output(data.isbn13)
-  else if (format === '10') output(data.isbn10)
-  else if (format === '13h') output(data.isbn13h)
-  else if (format === '10h') output(data.isbn10h)
-  else if (data[format]) output(data[format])
-  else if (format === 'h') {
-    if (data.isIsbn13) output(data.isbn13h)
-    else output(data.isbn10h)
-  } else if (format === 'n') {
-    if (data.isIsbn13) output(data.isbn13)
-    else output(data.isbn10)
-  } else if (format === 'data' || format === 'd') {
-    data.source = source
-    output(JSON.stringify(data, null, 2) + '\n')
-  } else if (format === 'audit' || format === 'a') {
-    output(JSON.stringify(audit(isbn), null, 2) + '\n')
+  if (format === "13") output(data.isbn13);
+  else if (format === "10") output(data.isbn10);
+  else if (format === "13h") output(data.isbn13h);
+  else if (format === "10h") output(data.isbn10h);
+  else if (data[format]) output(data[format]);
+  else if (format === "h") {
+    if (data.isIsbn13) output(data.isbn13h);
+    else output(data.isbn10h);
+  } else if (format === "n") {
+    if (data.isIsbn13) output(data.isbn13);
+    else output(data.isbn10);
+  } else if (format === "data" || format === "d") {
+    data.source = source;
+    output(JSON.stringify(data, null, 2) + "\n");
+  } else if (format === "audit" || format === "a") {
+    output(JSON.stringify(audit(isbn), null, 2) + "\n");
   } else {
-    output('unknown format', 1)
+    output("unknown format", 1);
   }
 } else {
-  output('invalid ISBN', 1)
+  output("invalid ISBN", 1);
 }
