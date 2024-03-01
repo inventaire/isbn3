@@ -24,10 +24,10 @@
   "scripts": {
     "test": "mocha",
     "lint": "standard",
-    "update-groups": "./scripts/update_groups.js",
+    "update-groups": "node ./scripts/update_groups.mjs",
     "update-dist": "./scripts/update_dist.sh",
     "update-toc": "./scripts/update_toc.sh",
-    "benchmark": "./benchmark/run.js",
+    "benchmark": "node ./benchmark/run.mjs",
     "prepublishOnly": "./scripts/prepublish.sh",
     "postpublish": "./scripts/postpublish.sh"
   },

@@ -32,8 +32,8 @@ format = format || "13h";
 
 const source = isbn;
 isbn = isbn.replace(/[^\dX]/g, "");
-import {parse} from "../lib/parse";
-import {audit} from "../lib/audit";
+import {parse} from "../lib/parse.js";
+import {audit} from "../lib/audit.js";
 const data = parse(isbn);
 if (data) {
   if (format === "13") output(data.isbn13);

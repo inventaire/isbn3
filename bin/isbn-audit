@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const [source] = process.argv.slice(2);
-import {audit} from "../lib/audit";
+import {audit} from "../lib/audit.js";
 
 const outputIsbnsWithClues = (isbns) => {
   const isbnsWithClues = isbns
