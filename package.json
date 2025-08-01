@@ -1,7 +1,7 @@
 {
   "name": "isbn3",
   "description": "ISBN utils: parse, validate, format, audit",
-  "version": "1.2.12",
+  "version": "1.2.13",
   "authors": [
     "Hetappi <hetappi.pm@gmail.com>",
     "Tadas S. <tadas@yoyo.lt>",
