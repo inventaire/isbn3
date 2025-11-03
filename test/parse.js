@@ -117,9 +117,11 @@ describe('parse', () => {
     })
 
     it('normalizes lowercase x to uppercase X in check digit', () => {
-      const { check, check10, isValid } = parse('85-359-0624-x')
+      const { check, check10, isValid, isbn10, isbn10h } = parse('85-359-0624-x')
       check.should.equal('X')
       check10.should.equal('X')
+      isbn10h.should.equal('85-359-0624-X')
+      isbn10.should.equal('853590624X')
       isValid.should.be.true()
     })
   })
