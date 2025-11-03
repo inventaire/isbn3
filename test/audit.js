@@ -67,4 +67,11 @@ describe('audit', () => {
     ]
     audit('978-3-641-11542-6').clues.should.deepEqual(clues)
   })
+
+  it('should suggest a valid checksum', () => {
+    const clues = [
+      { message: 'No alternative prefix or form could be found. Maybe the problem is the invalid checksum?', candidate: '978-1-78168-213-5', isbn13: '9781781682135', groupname: 'English language' }
+    ]
+    audit('9781781682134').clues.should.deepEqual(clues)
+  })
 })
