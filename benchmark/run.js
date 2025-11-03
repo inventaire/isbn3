@@ -9,12 +9,15 @@ console.timeEnd('load module')
 
 const isbns = require('./generate_benchmark_isbns')
 
-const parseTimerKey = `parsed ${isbns.length} non-hyphenated ISBNs in`
+const repeat = 100
+const parseTimerKey = `parsed ${isbns.length * repeat} non-hyphenated ISBNs in`
 
 console.time(parseTimerKey)
 
-// Wrapper function needed for running with isbn2 parse function
-// which would interpret the map second argument as a group whitelist
-const data = isbns.map(isbn => parse(isbn))
+for (let i=0; i<repeat; i++) {
+  // Wrapper function needed for running with isbn2 parse function
+  // which would interpret the map second argument as a group whitelist
+  const data = isbns.map(isbn => parse(isbn))
+}
 
 console.timeEnd(parseTimerKey)
