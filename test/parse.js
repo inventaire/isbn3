@@ -115,6 +115,15 @@ describe('parse', () => {
       isbn13.should.equal('9780304333769')
       isbn13h.should.equal('978-0-304-33376-9')
     })
+
+    it('normalizes lowercase x to uppercase X in check digit', () => {
+      const { check, check10, isValid, isbn10, isbn10h } = parse('85-359-0624-x')
+      check.should.equal('X')
+      check10.should.equal('X')
+      isbn10h.should.equal('85-359-0624-X')
+      isbn10.should.equal('853590624X')
+      isValid.should.be.true()
+    })
   })
 
   describe('given an ISBN13', () => {
