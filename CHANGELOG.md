@@ -1,6 +1,10 @@
 # CHANGELOG
 *versions follow [SemVer](http://semver.org)*
 
+## 2.0.0- 2025-11-04
+**BREAKING CHANGES**:
+  * The [`audit`](https://github.com/inventaire/isbn3#audit) function output was changed to provide more details on the fixed ISBN candidate
+
 ## 1.2.0- 2024-09-16
 * [`audit`](https://github.com/inventaire/isbn3#audit): more possibly recoverable cases added
 
