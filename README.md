@@ -179,22 +179,38 @@ ISBN.audit('9781090648525')
 //   "groupname": "English language",
 //   "clues": [
 //     {
-//       "message": "possible prefix error",
-//       "candidate": "979-10-90648-52-4",
-//       "groupname": "France"
+//       "message": "Possible prefix error",
+//       "candidate": {
+//         "isbn13h": "979-10-90648-52-4",
+//         "isbn13": "9791090648524",
+//         "groupname": "France"
+//       }
 //     }
 //   ]
 // }
 
 ISBN.audit('978-1-0906-4852-4')
 // {
-//   "source":"978-1-0906-4852-4",
-//   "validIsbn":false,
-//   "clues":[
+//   "source": "978-1-0906-4852-4",
+//   "validIsbn": false,
+//   "clues": [
 //     {
-//       "message":"checksum hints different prefix",
-//       "candidate":"979-10-90648-52-4",
-//       "groupname":"France"
+//       "message": "Found a matching group and publisher range, but the checksum didn't match. Could the checksum be wrong?",
+//       "candidate": {
+//         "isbn13h": "978-1-0906-4852-5",
+//         "isbn13": "9781090648525",
+//         "isbn10h": "1-0906-4852-9",
+//         "isbn10": "1090648529",
+//         "groupname": "English language"
+//       }
+//     },
+//     {
+//       "message": "Checksum hints different prefix",
+//       "candidate": {
+//         "isbn13h": "979-10-90648-52-4",
+//         "isbn13": "9791090648524",
+//         "groupname": "France"
+//       }
 //     }
 //   ]
 // }
