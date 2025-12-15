@@ -30,8 +30,8 @@ interface ISBN {
 
 declare module "isbn3" {
   export function parse(isbn: string): ISBN | null;
-  export function asIsbn13(isbn: string): string | null;
-  export function asIsbn10(isbn: string): string | null;
+  export function asIsbn13(isbn: string, hyphen?: boolean): string | null;
+  export function asIsbn10(isbn: string, hyphen?: boolean): string | null;
   export function hyphenate(isbn: string): string;
   export function audit(isbn: string): ISBNAudit;
   export const groups: Record<
