@@ -87,6 +87,7 @@ ISBN.parse('1-933988-03-7')
 // check10: '7',
 // check13: '0',
 // groupname: 'English language',
+// hasIsbn10: true,
 // isbn10: '1933988037',
 // isbn10h: '1-933988-03-7'
 // }
@@ -110,6 +111,7 @@ ISBN.parse('978-4-87311-336-4')
 //   check10: '9',
 //   check13: '4',
 //   groupname: 'Japan',
+//   hasIsbn10: true,
 //   isbn10: '4873113369',
 //   isbn10h: '4-87311-336-9'
 // }
@@ -135,7 +137,8 @@ ISBN.parse('979-10-96908-02-8')
 //   isbn13h: '979-10-96908-02-8',
 //   check10: '6',
 //   check13: '8',
-//   groupname: 'France'
+//   groupname: 'France',
+//   hasIsbn10: false
 // }
 
 ISBN.parse('not an isbn')

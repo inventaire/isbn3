@@ -17,26 +17,32 @@ interface ISBNBase {
   article: string;
   check: string;
   groupname: string;
-}
 
-interface ISBN10 extends ISBNBase {
-  isIsbn10: true;
-  isIsbn13: false;
-  check10: string;
-  isbn10: string;
-  isbn10h: string;
-}
+  // input related fields
+  isIsbn10: boolean;
+  isIsbn13: boolean;
 
-interface ISBN13 extends ISBNBase {
-  isIsbn10: false;
-  isIsbn13: true;
+  // isbn13 related fields
   prefix: string;
   check13: string;
   isbn13: string;
   isbn13h: string;
 }
 
-type ISBN = ISBN10 | ISBN13;
+// ISBN-13 only (no ISBN-10 equivalent)
+interface ISBN13Only extends ISBNBase {
+  hasIsbn10: false;
+}
+
+// ISBN-10 specific fields
+interface ISBN10 extends ISBNBase {
+  hasIsbn10: true;
+  check10: string;
+  isbn10: string;
+  isbn10h: string;
+}
+
+type ISBN = ISBN10 | ISBN13Only;
 
 declare module "isbn3" {
   export function parse(isbn: string): ISBN | null;
