@@ -31,14 +31,13 @@ interface ISBNBase {
 
 // ISBN-13 only (no ISBN-10 equivalent)
 interface ISBN13Only extends ISBNBase {
-  hasIsbn10: false;
+  isbn10: undefined;
 }
 
 // ISBN-10 specific fields
 interface ISBN10 extends ISBNBase {
-  hasIsbn10: true;
-  check10: string;
   isbn10: string;
+  check10: string;
   isbn10h: string;
 }
 

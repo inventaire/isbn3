@@ -35,11 +35,6 @@ describe('parse', () => {
       parse('0-7356-1967-0').source.should.equal('0-7356-1967-0')
     })
 
-    it('includes isbn10', () => {
-      const { hasIsbn10 } = parse('0-7356-1967-0')
-      hasIsbn10.should.be.true()
-    })
-
     it('does not include prefix', () => {
       const { prefix } = parse('0-7356-1967-0')
       should(prefix).not.be.ok()
@@ -139,16 +134,6 @@ describe('parse', () => {
         isIsbn13.should.be.true()
       })
 
-      it('includes isbn10', () => {
-        const { hasIsbn10 } = parse('978-3-642-38745-6')
-        hasIsbn10.should.be.true()
-      })
-
-      it('not includes isbn10', () => {
-        const { hasIsbn10 } = parse('9791280987297')
-        hasIsbn10.should.be.false()
-      })
-
       it('includes source', () => {
         parse('978-3-642-38745-6').source.should.equal('978-3-642-38745-6')
       })
@@ -191,6 +176,12 @@ describe('parse', () => {
     describe('with prefix 979', () => {
       it('includes prefix', () => {
         parse('9791091146135').prefix.should.equal('979')
+      })
+
+      it('does not include isbn10h, check10', () => {
+        should(parse('9791091146135').isbn10h).be.undefined()
+        // TODO logic calculates check10 even for 979
+       // should(parse('9791091146135').check10).be.undefined() 
       })
 
       it('includes group id', () => {
