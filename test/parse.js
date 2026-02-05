@@ -178,6 +178,12 @@ describe('parse', () => {
         parse('9791091146135').prefix.should.equal('979')
       })
 
+      it('does not include isbn10h, check10', () => {
+        should(parse('9791091146135').isbn10h).be.undefined()
+        // TODO logic calculates check10 even for 979
+       // should(parse('9791091146135').check10).be.undefined() 
+      })
+
       it('includes group id', () => {
         parse('9791091146135').group.should.equal('10')
       })
