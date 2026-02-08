@@ -35,13 +35,13 @@ interface ISBN13Only extends ISBNBase {
 }
 
 // ISBN-10 specific fields
-interface ISBN10 extends ISBNBase {
+interface ISBN13WithISBN10 extends ISBNBase {
   isbn10: string;
   check10: string;
   isbn10h: string;
 }
 
-type ISBN = ISBN10 | ISBN13Only;
+type ISBN = ISBN13WithISBN10 | ISBN13Only;
 
 declare module "isbn3" {
   export function parse(isbn: string): ISBN | null;
