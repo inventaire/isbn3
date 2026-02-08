@@ -1,10 +1,19 @@
 #!/usr/bin/env node
 let [ isbn, format ] = process.argv.slice(2)
 
-const output = (message, code = 0) => {
+const output = (message = '', code = 0) => {
   if (code === 0) process.stdout.write(message)
   else process.stderr.write(message)
   process.exit(code)
+}
+
+function outputFormatIfExisting (data, format) {
+  if (data[format] != null) {
+    output(data[format])
+  } else {
+    console.error(`${format} not found`, data)
+    process.exit(1)
+  }
 }
 
 if (!isbn || isbn.length === 0) {
@@ -36,17 +45,17 @@ const parse = require('../lib/parse')
 const audit = require('../lib/audit')
 const data = parse(isbn)
 if (data) {
-  if (format === '13') output(data.isbn13)
-  else if (format === '10') output(data.isbn10)
-  else if (format === '13h') output(data.isbn13h)
-  else if (format === '10h') output(data.isbn10h)
+  if (format === '13') outputFormatIfExisting(data, 'isbn13')
+  else if (format === '10') outputFormatIfExisting(data, 'isbn10')
+  else if (format === '13h') outputFormatIfExisting(data, 'isbn13h')
+  else if (format === '10h') outputFormatIfExisting(data, 'isbn10h')
   else if (data[format]) output(data[format])
   else if (format === 'h') {
-    if (data.isIsbn13) output(data.isbn13h)
-    else output(data.isbn10h)
+    if (data.isIsbn13) outputFormatIfExisting(data, 'isbn13h')
+    else outputFormatIfExisting(data, 'isbn10h')
   } else if (format === 'n') {
-    if (data.isIsbn13) output(data.isbn13)
-    else output(data.isbn10)
+    if (data.isIsbn13) outputFormatIfExisting(data, 'isbn13')
+    else outputFormatIfExisting(data, 'isbn10')
   } else if (format === 'data' || format === 'd') {
     data.source = source
     output(JSON.stringify(data, null, 2) + '\n')
