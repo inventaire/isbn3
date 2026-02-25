@@ -34,7 +34,8 @@
     "isbn.d.ts",
     "lib",
     "bin",
-    "scripts"
+    "scripts",
+    "CHANGELOG.md"
   ],
   "types": "isbn.d.ts",
   "engines": {
