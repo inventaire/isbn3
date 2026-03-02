@@ -5,11 +5,16 @@ on:
     # Every first of the month at 10:00
     - cron:  '0 10 1 * *'
 
+# See https://docs.github.com/fr/actions/reference/workflows-and-actions/workflow-syntax#permissions
+permissions:
+  id-token: write # Required for OIDC, see https://docs.npmjs.com/trusted-publishers
+  contents: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: 'lts/*'
@@ -19,37 +24,30 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: 'lts/*'
       - run: npm ci --no-audit
       - run: npm run update-groups
-      # See https://github.com/marketplace/actions/add-commit
-      - uses: EndBug/add-and-commit@v9
-        with:
-          author_name: Auto-update groups
-          author_email: devnull@inventaire.io
-          message: 'Auto-update groups'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: |
           echo 'Set git config user.email...'
           git config --global user.email "devnull@inventaire.io"
           echo 'Set git config user.name...'
           git config --global user.name "Auto-Update groups"
+          echo 'Stage files...'
+          git add ./lib/groups.js
+          echo 'Commit files...'
+          git commit -m 'Auto-update groups'
           echo 'Increment patch version number...'
           npm version patch
           echo 'Pushing commits to repo...'
           git push origin main
           echo 'Pushing tags to repo...'
           git push origin main --tags
-          echo 'Setup .npmrc...'
-          echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > .npmrc
           echo 'Publish on NPM...'
           npm publish
           echo 'Done!'
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Leave this as is, it's automatically generated
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # You need to set this in your repo settings
