@@ -34,6 +34,18 @@ Rebuild the browser demo bundle:
 npm run dev:update-dist
 ```
 
+## Checking the Browser Demo
+
+To check the demo in [index.html](./index.html):
+
+1. Rebuild with `npm run dev:update-dist`.
+2. Open `index.html` in a browser.
+3. Try an ISBN such as `9781781682135` and confirm both result blocks update.
+
+For demo-page debugging, use the browser developer tools and set breakpoints in the inline script in `index.html`.
+
+If you need to debug the library internals rather than the page behavior, prefer the Node-based launch configurations in `.vscode/launch.json`.
+
 ## Debugging
 
 Yes, this project can be debugged directly in VS Code. VS Code's built-in JavaScript debugger uses the same Node inspector protocol, so you do not need a separate debugger setup.
