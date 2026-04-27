@@ -42,7 +42,11 @@ To check the demo in [index.html](./index.html):
 2. Open `index.html` in a browser.
 3. Try an ISBN such as `9781781682135` and confirm both result blocks update.
 
-For demo-page debugging, use the browser developer tools and set breakpoints in the inline script in `index.html`.
+For quick browser debugging, you can temporarily add `debugger;` where you want execution to stop.
+
+If you add `debugger;` in `isbn.js` or a file under `lib/`, rebuild with `npm run dev:update-dist` and then refresh the page so the updated `dist/isbn.js` bundle is loaded.
+
+You can also use the browser developer tools to set breakpoints without editing the source.
 
 If you need to debug the library internals rather than the page behavior, prefer the Node-based launch configurations in `.vscode/launch.json`.
 
