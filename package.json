@@ -24,6 +24,7 @@
     "lint": "standard",
     "update-groups": "./scripts/update_groups.js",
     "update-dist": "./scripts/update_dist.sh",
+    "update-toc": "./scripts/update_toc.sh",
     "dev:update-dist": "node ./scripts/update_dist.js",
     "benchmark": "./benchmark/run.js",
     "prepublishOnly": "./scripts/prepublish.sh",
