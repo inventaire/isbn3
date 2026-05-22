@@ -2,13 +2,17 @@
 const [ source ] = process.argv.slice(2)
 const audit = require('../lib/audit')
 
-const outputIsbnsWithClues = isbns => {
+function outputIsbnsWithClues (isbns) {
   const isbnsWithClues = isbns
     .map(isbn => audit(isbn))
     .filter(auditData => auditData.clues.length > 0)
     .map(auditData => JSON.stringify(auditData))
     .join('\n')
   if (isbnsWithClues.length > 0) process.stdout.write(isbnsWithClues + '\n')
+}
+
+function parseIsbn (str) {
+  return str.match(/[\dX-]{10,17}/g)
 }
 
 // Prevent logging an EPIPE error when piping the output
@@ -18,14 +22,14 @@ process.stdout.on('error', err => {
 })
 
 if (source != null) {
-  const data = audit(source)
+  const data = audit(parseIsbn(source)?.[0])
   console.log(JSON.stringify(data))
 } else {
   let remaining = ''
   process.stdin
   .on('data', buf => {
     const parts = (remaining + buf.toString()).split('\n')
-    const isbns = parts.slice(0, -1)
+    const isbns = parseIsbn(parts.slice(0, -1))
     remaining = parts.slice(-1)[0]
     outputIsbnsWithClues(isbns)
   })
