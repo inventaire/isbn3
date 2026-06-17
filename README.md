@@ -4,7 +4,7 @@
 
 An ISBN JavaScript Library.
 
-> **v3 is ESM-only and ships TypeScript types.** It requires Node.js >= 18 and is consumed via `import` (no more `require`). See the [CHANGELOG](./CHANGELOG.md#300) for the migration notes.
+> **v3 ships dual ESM + CommonJS builds and TypeScript types.** It requires Node.js >= 18 and works with both `import` and `require`. See the [CHANGELOG](./CHANGELOG.md#300) for the migration notes.
 
 Please note that this is a fork of [isbn2](https://www.npmjs.com/package/isbn2), which was a fork of [isbn](https://www.npmjs.com/package/isbn) package which was forked from the original [isbnjs](https://code.google.com/p/isbnjs/) project on Google Code.
 
@@ -68,6 +68,13 @@ or named imports:
 
 ```js
 import { parse, audit, hyphenate, asIsbn13, asIsbn10, groups } from 'isbn3'
+```
+
+CommonJS consumers (e.g. a default NestJS app) can `require` it too:
+
+```js
+const { parse, audit } = require('isbn3')
+// or the aggregate object: require('isbn3').default
 ```
 
 TypeScript types are bundled with the package (no `@types/isbn3` needed).

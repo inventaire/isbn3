@@ -43,4 +43,7 @@ jobs:
       - run: npm ci --no-audit
       - run: npm run build
       - run: node dist/bin/isbn.js 9784873113364
-      - run: node --input-type=module -e "import ISBN from './dist/index.js'; if (ISBN.parse('1-933988-03-7').isbn13h !== '978-1-933988-03-0') process.exit(1)"
+      - name: Smoke-test the ESM build
+        run: node --input-type=module -e "import ISBN from './dist/index.js'; if (ISBN.parse('1-933988-03-7').isbn13h !== '978-1-933988-03-0') process.exit(1)"
+      - name: Smoke-test the CJS build
+        run: node -e "const { parse } = require('./dist/index.cjs'); if (parse('1-933988-03-7').isbn13h !== '978-1-933988-03-0') process.exit(1)"

@@ -3,13 +3,13 @@
 
 ## 3.0.0 - 2026-06-16
 **BREAKING CHANGES**:
-  * The package is now **ESM-only**: consume it with `import` instead of `require`. CommonJS consumers must migrate to ESM or use a dynamic `await import('isbn3')`.
   * **Node.js >= 18** is now required (was `>= 6.4.0`).
   * The browserified UMD build (`./dist/isbn.js`, `./dist/isbn.min.js`, the `dist`/`gh-pages` branches and the `window.ISBN` global) has been removed. Load the package as an ES module from a CDN instead (e.g. `https://cdn.jsdelivr.net/npm/isbn3@3/+esm`).
 
 **Other changes** (no API change — same functions, same output shape):
-  * Source rewritten in **TypeScript**; accurate type declarations are now generated and bundled (`dist/index.d.ts`), replacing the hand-written `isbn.d.ts`. The `audit` clue `candidate` type is now correctly typed as an object (was `string`).
-  * Tooling modernized: bundled with [tsdown](https://tsdown.dev) (Rolldown), tested with the built-in `node:test` runner, linted/formatted with [Biome](https://biomejs.dev); the groups updater now uses the native `fetch` (dropping `node-fetch`).
+  * The package now ships **dual ESM + CommonJS** builds with an `exports` map, so it works with both `import` and `require`. The default export (aggregate object) and the named exports (`parse`, `audit`, …) are both available in either module system.
+  * Source rewritten in **TypeScript**; accurate type declarations are now generated and bundled (`dist/index.d.ts` for ESM, `dist/index.d.cts` for CJS), replacing the hand-written `isbn.d.ts`. The `audit` clue `candidate` type is now correctly typed as an object (was `string`).
+  * Tooling modernized: bundled with [tsdown](https://tsdown.dev) (Rolldown), tested with the built-in `node:test` runner run directly via Node's native TypeScript support, linted/formatted with [Biome](https://biomejs.dev); the groups updater now uses the native `fetch` (dropping `node-fetch`).
 
 ## 2.0.0- 2025-11-04
 **BREAKING CHANGES**:
