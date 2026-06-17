@@ -12,7 +12,10 @@
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
     // tsdown handles bundling, declarations and source maps; tsc is type-check only.
-    "noEmit": true
+    "noEmit": true,
+    // Source uses explicit `.ts` import specifiers so it runs directly under
+    // Node's native type stripping (no tsx). Allowed because `noEmit` is set.
+    "allowImportingTsExtensions": true
   },
   "include": ["src", "test", "scripts", "benchmark", "tsdown.config.ts"]
 }

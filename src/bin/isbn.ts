@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import audit from '../audit.js'
-import parse from '../parse.js'
-import type { ISBN } from '../types.js'
+import audit from '../audit.ts'
+import parse from '../parse.ts'
+import type { ISBN } from '../types.ts'
 
 const [rawIsbn, rawFormat] = process.argv.slice(2)
 

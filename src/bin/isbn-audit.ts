@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import audit from '../audit.js'
+import audit from '../audit.ts'
 
 const [source] = process.argv.slice(2)
 

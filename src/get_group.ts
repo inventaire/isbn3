@@ -1,7 +1,7 @@
 // get_group.ts — Locate the registration group for an ISBN-13
 
-import groups from './groups.js'
-import type { Group } from './types.js'
+import groups from './groups.ts'
+import type { Group } from './types.ts'
 
 interface FoundGroup {
   groupId: string

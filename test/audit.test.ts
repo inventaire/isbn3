@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { audit } from '../src/index.js'
+import { audit } from '../src/index.ts'
 
 describe('audit', () => {
   it('should return audit data', () => {

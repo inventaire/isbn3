@@ -1,7 +1,7 @@
 // as_isbn10.ts — Convert any valid ISBN to ISBN-10 format
 // Returns null for 979-prefix ISBNs that have no ISBN-10 equivalent
 
-import parse from './parse.js'
+import parse from './parse.ts'
 
 export default (val: unknown, hyphen?: boolean): string | null => {
   const data = parse(val)

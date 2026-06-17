@@ -1,6 +1,6 @@
 // hyphenate.ts — Hyphenate an ISBN using correct group/publisher/article ranges
 
-import parse from './parse.js'
+import parse from './parse.ts'
 
 export default (val: unknown): string | null => {
   const data = parse(val)

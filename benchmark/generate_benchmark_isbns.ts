@@ -1,5 +1,5 @@
-import calculateCheckDigit from '../src/calculate_check_digit.js'
-import groups from '../src/groups.js'
+import calculateCheckDigit from '../src/calculate_check_digit.ts'
+import groups from '../src/groups.ts'
 
 const getRandomDigits = (length: number): string =>
   Math.random()

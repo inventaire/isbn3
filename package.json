@@ -22,6 +22,7 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "bin": {
     "isbn": "./dist/bin/isbn.js",
     "isbn-audit": "./dist/bin/isbn-audit.js",
@@ -29,13 +30,14 @@
   },
   "scripts": {
     "build": "tsdown",
-    "test": "tsx --test test/*.test.ts",
+    "test": "node --test test/*.test.ts",
+    "coverage": "node --test --experimental-test-coverage test/*.test.ts",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "format": "biome format --write",
     "typecheck": "tsc --noEmit",
-    "update-groups": "tsx scripts/update_groups.ts",
-    "benchmark": "tsx benchmark/run.ts",
+    "update-groups": "node scripts/update_groups.ts",
+    "benchmark": "node benchmark/run.ts",
     "prepublishOnly": "npm run build"
   },
   "files": [
@@ -50,7 +52,6 @@
     "@types/node": "^22.19.21",
     "@types/xml2js": "^0.4.14",
     "tsdown": "^0.22.3",
-    "tsx": "^4.0.0",
     "typescript": "^6.0.3",
     "xml2js": "^0.6.2"
   },

@@ -17,25 +17,6 @@ export interface IsbnParts {
   check: string
 }
 
-/**
- * Mutable working shape used while assembling a parsed ISBN.
- * Fields are progressively filled by split → complete → parse.
- */
-export interface IsbnDataDraft extends IsbnParts {
-  source: string
-  isIsbn10: boolean
-  isIsbn13: boolean
-  prefix?: string
-  groupname?: string
-  check10?: string
-  check13?: string
-  isbn13?: string
-  isbn13h?: string
-  isbn10?: string
-  isbn10h?: string
-  isValid?: boolean
-}
-
 /** A fully parsed and valid ISBN. Returned by `parse`. */
 export interface ISBN {
   source: string

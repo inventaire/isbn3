@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import calculateCheckDigit from '../calculate_check_digit.js'
-import parse from '../parse.js'
+import calculateCheckDigit from '../calculate_check_digit.ts'
+import parse from '../parse.ts'
 
 const [input, option] = process.argv.slice(2)
 

@@ -1,38 +1,42 @@
-// complete_isbn_data.ts — Fill computed fields (check digits, ISBN-10/13
-// plain and hyphenated) on a parsed ISBN draft.
+// complete_isbn_data.ts — Compute the derived fields (group name, check digits,
+// ISBN-10/13 plain and hyphenated) for a set of ISBN parts under a given prefix.
 
-import calculateCheckDigit from './calculate_check_digit.js'
-import groups from './groups.js'
-import type { IsbnDataDraft } from './types.js'
+import calculateCheckDigit from './calculate_check_digit.ts'
+import groups from './groups.ts'
+import type { IsbnParts } from './types.ts'
 
-export default (codes: IsbnDataDraft | null): IsbnDataDraft | null => {
-  if (!codes) return null
+/** The fields derived from the ISBN parts, added on top of them by `parse`. */
+export interface CompletedIsbnData {
+  groupname: string
+  check10: string
+  check13: string
+  isbn13: string
+  isbn13h: string
+  /** Absent for 979-prefixed ISBNs (no ISBN-10 equivalent). */
+  isbn10?: string
+  isbn10h?: string
+}
 
-  const prefix = codes.prefix || '978'
-  const { group, publisher, article } = codes
-
+export default ({ group, publisher, article }: IsbnParts, prefix: string): CompletedIsbnData | null => {
   const groupRecord = groups[`${prefix}-${group}`]
   if (!groupRecord) return null
 
-  codes.groupname = groupRecord.name
-
   const isbn10WithoutCheck = `${group}${publisher}${article}`
-
-  const check10 = calculateCheckDigit(isbn10WithoutCheck) ?? undefined
-  codes.check10 = check10
+  const check10 = calculateCheckDigit(isbn10WithoutCheck)
   if (!check10) return null
-
-  const check13 = calculateCheckDigit(prefix + isbn10WithoutCheck) ?? undefined
-  codes.check13 = check13
+  const check13 = calculateCheckDigit(`${prefix}${isbn10WithoutCheck}`)
   if (!check13) return null
 
-  codes.isbn13 = `${prefix}${group}${publisher}${article}${check13}`
-  codes.isbn13h = `${prefix}-${group}-${publisher}-${article}-${check13}`
-
-  if (prefix === '978') {
-    codes.isbn10 = `${group}${publisher}${article}${check10}`
-    codes.isbn10h = `${group}-${publisher}-${article}-${check10}`
+  return {
+    groupname: groupRecord.name,
+    check10,
+    check13,
+    isbn13: `${prefix}${group}${publisher}${article}${check13}`,
+    isbn13h: `${prefix}-${group}-${publisher}-${article}-${check13}`,
+    // 979-prefixed ISBNs have no ISBN-10 equivalent, so omit those fields.
+    ...(prefix === '978' && {
+      isbn10: `${group}${publisher}${article}${check10}`,
+      isbn10h: `${group}-${publisher}-${article}-${check10}`,
+    }),
   }
-
-  return codes
 }

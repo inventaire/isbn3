@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { hyphenate } from '../src/index.js'
+import { hyphenate } from '../src/index.ts'
 
 describe('hyphenate', () => {
   it('hyphenates ISBN10s', () => {

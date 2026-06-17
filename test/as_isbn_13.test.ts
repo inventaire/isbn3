@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { asIsbn13 } from '../src/index.js'
+import { asIsbn13 } from '../src/index.ts'
 
 describe('asIsbn13', () => {
   it('converts ISBN10 to ISBN13', () => {

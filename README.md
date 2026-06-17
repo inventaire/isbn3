@@ -328,28 +328,32 @@ isbn-checksum 978-4-87311-336-1
 ## Benchmark
 Indicative benchmark, nothing super scientific, YMMV.
 
-Running `npm run benchmark` a few times on some Linux machine with Node.Js `v8.12` produced in average the following mesure:
+`npm run benchmark` generates a large set of ISBNs and reports the module load
+time and the total parse time. A recent run on Node.js 22 produced roughly:
 
-* isbn3
-- load module: 6ms
-- parse 4960 non-hyphenated ISBNs in around 110ms
+- load module: ~70ms
+- parse ~660,000 non-hyphenated ISBNs in ~1.7s (~380k ISBNs/s)
 
-* [isbn2](https://www.npmjs.com/package/isbn2) (for comparison)
-- load module: 4.5ms
-- parse 4960 non-hyphenated ISBNs in around 285ms
+[Group lookups](https://github.com/inventaire/isbn3/blob/main/src/get_group.ts)
+are resolved directly against the generated groups object, so parsing stays fast
+even on large batches.
 
-The difference is mainly due to the [generation of a map of groups in `isbn3`](https://github.com/inventaire/isbn3/blob/main/src/get_group.ts), which takes more time a initialization but makes groups lookups much faster.
-
-Run it with `npm run benchmark`.
+Run it yourself with `npm run benchmark`.
 
 ## Development
 
 The library source is written in TypeScript (`src/`) and bundled to ESM + type
-declarations in `dist/` with [tsdown](https://tsdown.dev). Available scripts:
+declarations in `dist/` with [tsdown](https://tsdown.dev).
+
+The test, benchmark and groups-update scripts run the TypeScript sources
+directly through Node's native type stripping (no `tsx`, no build step), so
+**development requires Node >= 22.6** (the published package itself still runs on
+Node >= 18). Available scripts:
 
 ```sh
 npm run build       # bundle src/ to dist/ (ESM + .d.ts)
-npm test            # run the node:test suite (via tsx)
+npm test            # run the node:test suite (node --test, native TS)
+npm run coverage    # run the test suite with coverage
 npm run lint        # lint + format check (Biome)
 npm run lint:fix    # apply safe lint/format fixes
 npm run typecheck   # tsc --noEmit

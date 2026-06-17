@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # Lint, type-check and run the TypeScript source directly via Node's native
+  # type stripping (no tsx). Requires Node >= 22.6.
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci --no-audit
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm test
+
+  # The published package is plain ESM that targets the `engines` floor (Node 18).
+  # Build it and smoke-test the bundled output on the oldest supported runtimes.
+  compat:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci --no-audit
+      - run: npm run build
+      - run: node dist/bin/isbn.js 9784873113364
+      - run: node --input-type=module -e "import ISBN from './dist/index.js'; if (ISBN.parse('1-933988-03-7').isbn13h !== '978-1-933988-03-0') process.exit(1)"

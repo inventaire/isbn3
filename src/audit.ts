@@ -1,9 +1,9 @@
 // audit.ts — Audit an ISBN and return validity status with diagnostic clues
 
-import { considerAltPrefix, lookForPossibleInvalidityCauses } from './audit_clues.js'
-import normalize from './normalize.js'
-import parse from './parse.js'
-import type { Clue, ISBNAudit } from './types.js'
+import { considerAltPrefix, lookForPossibleInvalidityCauses } from './audit_clues.ts'
+import normalize from './normalize.ts'
+import parse from './parse.ts'
+import type { Clue, ISBNAudit } from './types.ts'
 
 export default (source: string): ISBNAudit => {
   if (typeof source !== 'string' || source.length === 0) throw new Error(`invalid input: ${source}`)

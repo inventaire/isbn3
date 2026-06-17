@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import getGroup from '../src/get_group.js'
+import getGroup from '../src/get_group.ts'
 
 describe('getGroup', () => {
   it('should find an ISBN group when existing', () => {
