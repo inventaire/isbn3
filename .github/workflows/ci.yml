@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # Lint, type-check and run the TypeScript sources directly via Node's native
+  # type stripping (no tsx, no build step). The build toolchain requires Node
+  # >= 22.18, so this runs on supported Node versions only.
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci --no-audit
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+  # Build the package once on a supported Node and publish dist/ as an artifact.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+  # The emitted ESM/CJS targets Node 18, so smoke-test the *prebuilt* output on
+  # the oldest supported runtimes (no rebuild — the toolchain can't run there).
+  compat:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20]
+    steps:
+      # Checkout brings package.json (`"type": "module"`) so the ESM files in
+      # dist/ are interpreted correctly; the prebuilt dist/ comes from the artifact.
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: node dist/bin/isbn.js 9784873113364
+      - name: Smoke-test the ESM build
+        run: node --input-type=module -e "import ISBN from './dist/index.js'; if (ISBN.parse('1-933988-03-7').isbn13h !== '978-1-933988-03-0') process.exit(1)"
+      - name: Smoke-test the CJS build
+        run: node -e "const { parse } = require('./dist/index.cjs'); if (parse('1-933988-03-7').isbn13h !== '978-1-933988-03-0') process.exit(1)"

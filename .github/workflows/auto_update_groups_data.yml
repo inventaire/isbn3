@@ -15,17 +15,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
       - run: npm ci --no-audit
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
       - run: npm test
   publish:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
       - run: npm ci --no-audit
@@ -36,7 +39,7 @@ jobs:
           echo 'Set git config user.name...'
           git config --global user.name "Auto-Update groups"
           echo 'Stage files...'
-          git add ./lib/groups.js
+          git add ./src/groups.ts
           echo 'Commit files...'
           git commit -m 'Auto-update groups'
           echo 'Increment patch version number...'
@@ -46,7 +49,7 @@ jobs:
           echo 'Pushing tags to repo...'
           git push origin main --tags
           echo 'Publish on NPM...'
-          npm publish
+          npm publish --provenance
           echo 'Done!'
 
         env:

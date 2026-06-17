@@ -1,22 +1,27 @@
 #!/usr/bin/env node
-let [ isbn, format ] = process.argv.slice(2)
+import audit from '../audit.ts'
+import parse from '../parse.ts'
+import type { ISBN } from '../types.ts'
 
-const output = (message = '', code = 0) => {
+const [rawIsbn, rawFormat] = process.argv.slice(2)
+
+const output = (message = '', code = 0): never => {
   if (code === 0) process.stdout.write(message)
   else process.stderr.write(message)
   process.exit(code)
 }
 
-function outputFormatIfExisting (data, format) {
-  if (data[format] != null) {
-    output(data[format])
+const outputFormatIfExisting = (data: ISBN, key: keyof ISBN): void => {
+  const value = data[key]
+  if (value != null) {
+    output(String(value))
   } else {
-    console.error(`${format} not found`, data)
+    console.error(`${key} not found`, data)
     process.exit(1)
   }
 }
 
-if (!isbn || isbn.length === 0) {
+if (!rawIsbn || rawIsbn.length === 0) {
   output(`isbn <isbn> <format>
 
 Valid ISBN input examples:
@@ -37,19 +42,17 @@ Formats:
 - data: output all this data as JSON`)
 }
 
-format = format || '13h'
-
-const source = isbn
-isbn = isbn.replace(/[^\dX]/g, '')
-const parse = require('../lib/parse')
-const audit = require('../lib/audit')
+const format = rawFormat || '13h'
+const source = rawIsbn
+const isbn = rawIsbn.replace(/[^\dX]/g, '')
 const data = parse(isbn)
+
 if (data) {
   if (format === '13') outputFormatIfExisting(data, 'isbn13')
   else if (format === '10') outputFormatIfExisting(data, 'isbn10')
   else if (format === '13h') outputFormatIfExisting(data, 'isbn13h')
   else if (format === '10h') outputFormatIfExisting(data, 'isbn10h')
-  else if (data[format]) output(data[format])
+  else if (data[format as keyof ISBN]) output(String(data[format as keyof ISBN]))
   else if (format === 'h') {
     if (data.isIsbn13) outputFormatIfExisting(data, 'isbn13h')
     else outputFormatIfExisting(data, 'isbn10h')
@@ -58,9 +61,9 @@ if (data) {
     else outputFormatIfExisting(data, 'isbn10')
   } else if (format === 'data' || format === 'd') {
     data.source = source
-    output(JSON.stringify(data, null, 2) + '\n')
+    output(`${JSON.stringify(data, null, 2)}\n`)
   } else if (format === 'audit' || format === 'a') {
-    output(JSON.stringify(audit(isbn), null, 2) + '\n')
+    output(`${JSON.stringify(audit(isbn), null, 2)}\n`)
   } else {
     output('unknown format', 1)
   }

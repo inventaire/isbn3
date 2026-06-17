@@ -1,8 +1,12 @@
-#!/usr/bin/env node
-const groups = require('../lib/groups')
-const calculateCheckDigit = require('../lib/calculate_check_digit')
-const getRandomDigits = length => Math.random().toString().substring(2, 2 + length)
-const generateIsbn = (prefix, group, publisher) => {
+import calculateCheckDigit from '../src/calculate_check_digit.ts'
+import groups from '../src/groups.ts'
+
+const getRandomDigits = (length: number): string =>
+  Math.random()
+    .toString()
+    .substring(2, 2 + length)
+
+const generateIsbn = (prefix: string, group: string, publisher: string): string => {
   const isbn13WithoutArticleAndCheck = `${prefix}${group}${publisher}`
   const articleLength = 12 - isbn13WithoutArticleAndCheck.length
   const article = getRandomDigits(articleLength)
@@ -10,14 +14,13 @@ const generateIsbn = (prefix, group, publisher) => {
   return `${prefix}${group}${publisher}${article}${check}`
 }
 
-const isbns = []
+const isbns: string[] = []
 
-// Generate 2 ISBNs per known range boundaries
-for (let groupPrefix in groups) {
-  const [ prefix, group ] = groupPrefix.split('-')
+// Generate 2 ISBNs per known range boundary
+for (const groupPrefix in groups) {
+  const [prefix, group] = groupPrefix.split('-')
   const groupData = groups[groupPrefix]
-  for (let range of groupData.ranges) {
-    const [ min, max ] = range
+  for (const [min, max] of groupData.ranges) {
     isbns.push(generateIsbn(prefix, group, min))
     isbns.push(generateIsbn(prefix, group, min))
     isbns.push(generateIsbn(prefix, group, max))
@@ -25,4 +28,4 @@ for (let groupPrefix in groups) {
   }
 }
 
-module.exports = isbns
+export default isbns

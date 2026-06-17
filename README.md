@@ -1,8 +1,10 @@
 # isbn3
 
-[![Node](https://img.shields.io/badge/node->=v6.4.0-brightgreen.svg)](http://nodejs.org)
+[![Node](https://img.shields.io/badge/node->=18-brightgreen.svg)](http://nodejs.org)
 
 An ISBN JavaScript Library.
+
+> **v3 ships dual ESM + CommonJS builds and TypeScript types.** It requires Node.js >= 18 and works with both `import` and `require`. See the [CHANGELOG](./CHANGELOG.md#300) for the migration notes.
 
 Please note that this is a fork of [isbn2](https://www.npmjs.com/package/isbn2), which was a fork of [isbn](https://www.npmjs.com/package/isbn) package which was forked from the original [isbnjs](https://code.google.com/p/isbnjs/) project on Google Code.
 
@@ -54,15 +56,34 @@ From the command line:
 npm install isbn3
 ```
 
-Then in your JS file:
+Then in your JS/TS file, using the default import:
 
 ```js
-const ISBN = require('isbn3')
+import ISBN from 'isbn3'
+
+ISBN.parse('1-933988-03-7')
 ```
 
-Alternatively, you can call the ES5 browserified version of the module from an HTML file, which sets the module object on `window.ISBN`:
+or named imports:
+
+```js
+import { parse, audit, hyphenate, asIsbn13, asIsbn10, groups } from 'isbn3'
+```
+
+CommonJS consumers (e.g. a default NestJS app) can `require` it too:
+
+```js
+const { parse, audit } = require('isbn3')
+// or the aggregate object: require('isbn3').default
+```
+
+TypeScript types are bundled with the package (no `@types/isbn3` needed).
+
+In the browser, `isbn3` can be loaded directly as an ES module from a CDN:
 ```html
-<script type="application/javascript" src="./node_modules/dist/isbn.js"></script>
+<script type="module">
+  import ISBN from 'https://cdn.jsdelivr.net/npm/isbn3@3/+esm'
+</script>
 ```
 
 See `./index.html` or the [live demo](http://inventaire.github.io/isbn3/) for an example.
@@ -314,31 +335,41 @@ isbn-checksum 978-4-87311-336-1
 ## Benchmark
 Indicative benchmark, nothing super scientific, YMMV.
 
-Running `npm run benchmark` a few times on some Linux machine with Node.Js `v8.12` produced in average the following mesure:
+`npm run benchmark` generates a large set of ISBNs and reports the module load
+time and the total parse time. A recent run on Node.js 22 produced roughly:
 
-* isbn3
-- load module: 6ms
-- parse 4960 non-hyphenated ISBNs in around 110ms
+- load module: ~70ms
+- parse ~660,000 non-hyphenated ISBNs in ~1.7s (~380k ISBNs/s)
 
-* [isbn2](https://www.npmjs.com/package/isbn2) (for comparison)
-- load module: 4.5ms
-- parse 4960 non-hyphenated ISBNs in around 285ms
+[Group lookups](https://github.com/inventaire/isbn3/blob/main/src/get_group.ts)
+are resolved directly against the generated groups object, so parsing stays fast
+even on large batches.
 
-The difference is mainly due to the [generation of a map of groups in `isbn3`](https://github.com/inventaire/isbn3/blob/main/lib/get_group.js), which takes more time a initialization but makes groups lookups much faster.
+Run it yourself with `npm run benchmark`.
 
 ## Development
 
-### Test Suite
+The library source is written in TypeScript (`src/`) and bundled to ESM + type
+declarations in `dist/` with [tsdown](https://tsdown.dev).
 
-To run the lint/test suite use:
+The test, benchmark and groups-update scripts run the TypeScript sources
+directly through Node's native type stripping (no `tsx`, no build step), so
+**development requires Node >= 22.6** (the published package itself still runs on
+Node >= 18). Available scripts:
 
 ```sh
-npm test
+npm run build       # bundle src/ to dist/ (ESM + .d.ts)
+npm test            # run the node:test suite (node --test, native TS)
+npm run coverage    # run the test suite with coverage
+npm run lint        # lint + format check (Biome)
+npm run lint:fix    # apply safe lint/format fixes
+npm run typecheck   # tsc --noEmit
+npm run benchmark   # run the parsing benchmark
 ```
 
 ### Update Groups data
 
-[Groups data](https://github.com/inventaire/isbn3/blob/main/lib/groups.js) are fetched from isbn-international.org, and are critical to how this lib parses ISBNs. Unfortunately, those groups aren't fixed once for all, and we need to update those data periodically.
+[Groups data](https://github.com/inventaire/isbn3/blob/main/src/groups.ts) are fetched from isbn-international.org, and are critical to how this lib parses ISBNs. Unfortunately, those groups aren't fixed once for all, and we need to update those data periodically.
 
 Once a month, a [CI job](https://github.com/inventaire/isbn3/blob/main/.github/workflows/auto_update_groups_data.yml) takes care of updating ISBN groups data and publishing a patch version:
 ![Auto-update groups data](https://github.com/inventaire/isbn3/workflows/Update%20groups%20and%20publish/badge.svg)

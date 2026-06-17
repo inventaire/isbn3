@@ -1,23 +1,23 @@
 #!/usr/bin/env node
-const [ input, option ] = process.argv.slice(2)
+import calculateCheckDigit from '../calculate_check_digit.ts'
+import parse from '../parse.ts'
+
+const [input, option] = process.argv.slice(2)
 
 let normalized = input.replace(/[^\dX]/g, '')
 if (normalized.length === 10) normalized = normalized.substring(0, 9)
 else if (normalized.length === 13) normalized = normalized.substring(0, 12)
 
-const calculateCheckDigit = require('../lib/calculate_check_digit')
-const parse = require('../lib/parse')
 const checksum = calculateCheckDigit(normalized)
 const isbnData = parse(`${normalized}${checksum}`)
 if (isbnData == null) {
   process.stderr.write('invalid ISBN despite recalculated checksum\n')
   process.exit(1)
 }
-const { isbn13h } = isbnData
 
 if (option === 'c') {
-  process.stdout.write(checksum)
+  process.stdout.write(String(checksum))
 } else {
-  const data = { input, checksumCalculatedFrom: normalized, checksum, isbn: isbn13h }
-  process.stdout.write(JSON.stringify(data) + '\n')
+  const data = { input, checksumCalculatedFrom: normalized, checksum, isbn: isbnData.isbn13h }
+  process.stdout.write(`${JSON.stringify(data)}\n`)
 }

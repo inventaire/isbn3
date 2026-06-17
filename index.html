@@ -1,47 +1,48 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ISBN Parser</title>
-  <style type="text/css">
-    body{
+  <style>
+    body {
       margin: 1rem;
       font-family: sans-serif;
     }
-    #title{
+    #title {
       font-size: x-large;
       margin: 1rem 0;
     }
-    #intro{
+    #intro {
       color: #444;
     }
-    .control{
+    .control {
       margin: 1rem 0;
     }
-    pre:not(:empty){
+    pre:not(:empty) {
       background-color: #eee;
       white-space: pre-wrap;
     }
-    pre:not(:empty):not(.inline){
+    pre:not(:empty):not(.inline) {
       padding: 1em;
       max-width: 30em;
       margin: 1em 0;
     }
-    .no-js{
+    .no-js {
       color: red;
       padding: 1em;
       background-color: #ccc;
     }
-    pre.inline{
+    pre.inline {
       display: inline;
       padding: 0.2rem;
     }
   </style>
-  <script type="application/javascript" src="./dist/isbn.js"></script>
 </head>
 <body>
   <div id="title">ISBN Parser</div>
 
-  <p id="intro">This is a demo of what the <a href="https://github.com/inventaire/isbnjs">isbn3</a> JS module can deduce from an <a href="https://en.wikipedia.org/wiki/International_Standard_Book_Number">ISBN</a></p>
+  <p id="intro">This is a demo of what the <a href="https://github.com/inventaire/isbn3">isbn3</a> JS module can deduce from an <a href="https://en.wikipedia.org/wiki/International_Standard_Book_Number">ISBN</a></p>
 
   <div class="control">
     ISBN: <input id="isbnInput" type="text" value="9781781682135" />
@@ -56,70 +57,63 @@
   <strong>
     <a href="https://github.com/inventaire/isbn3#audit"><pre class="inline">ISBN.audit</pre></a>
     result:
-    </strong>
+  </strong>
   <pre id="audit"></pre>
 
   <noscript>
     <p class="no-js">This demo requires javascript</p>
   </noscript>
 
-  <script type="application/javascript">
-    const queryIsbn = new URLSearchParams(window.location.search).get('isbn')
-    const debouncedUpdate = debounce(update, 100)
+  <script type="module">
+    // isbn3 is an ESM-only package: load it directly from a CDN as an ES module.
+    import ISBN from 'https://cdn.jsdelivr.net/npm/isbn3@3/+esm'
 
+    const isbnInput = document.getElementById('isbnInput')
+    const resultEl = document.getElementById('result')
+    const auditEl = document.getElementById('audit')
+
+    const queryIsbn = new URLSearchParams(window.location.search).get('isbn')
     if (queryIsbn) isbnInput.value = queryIsbn
 
-    window.addEventListener('load', function () {
-      update()
-      isbnInput.addEventListener('keyup', debouncedUpdate)
-    })
+    let lastValue
 
-    var lastValue
+    const updateQueryString = isbn => {
+      window.history.pushState({ isbn }, isbn, `?isbn=${isbn}`)
+    }
 
-    function update () {
+    const update = () => {
       const currentValue = isbnInput.value.trim()
       if (currentValue === lastValue) return
       lastValue = currentValue
 
       if (currentValue === '') {
-        result.innerHTML = 'Missing ISBN'
-        audit.innerHTML = 'Missing ISBN'
+        resultEl.textContent = 'Missing ISBN'
+        auditEl.textContent = 'Missing ISBN'
         return
       }
 
       const isbnData = ISBN.parse(currentValue)
-      if (isbnData) {
-        result.innerHTML = JSON.stringify(isbnData, null, 2)
-      } else {
-        result.innerHTML = 'invalid ISBN'
-      }
-      const isbnAudit = ISBN.audit(currentValue)
-      audit.innerHTML = JSON.stringify(isbnAudit, null, 2)
+      resultEl.textContent = isbnData ? JSON.stringify(isbnData, null, 2) : 'invalid ISBN'
+      auditEl.textContent = JSON.stringify(ISBN.audit(currentValue), null, 2)
       updateQueryString(currentValue)
     }
 
-    function updateQueryString (isbn) {
-      window.history.pushState({ isbn }, isbn, `?isbn=${isbn}`)
-    }
-
-    // Restore the ISBN from an History event
-    // cf https://developer.mozilla.org/en-US/docs/Web/API/History_API
-    window.onpopstate = function ({ state }) {
-      const { isbn } = state
-      if (isbn) isbnInput.value = isbn
-    }
-
-    // Inspired by https://gist.github.com/nmsdvid/8807205
-    function debounce(func, wait) {
-      var timeout
-      return function () {
+    const debounce = (func, wait) => {
+      let timeout
+      return (...args) => {
         clearTimeout(timeout)
-        timeout = setTimeout(() => {
-          timeout = null
-          func.apply(this, arguments)
-        }, wait)
+        timeout = setTimeout(() => func(...args), wait)
       }
     }
+
+    // Restore the ISBN from a History event
+    // cf https://developer.mozilla.org/en-US/docs/Web/API/History_API
+    window.addEventListener('popstate', ({ state }) => {
+      if (state?.isbn) isbnInput.value = state.isbn
+    })
+
+    update()
+    isbnInput.addEventListener('keyup', debounce(update, 100))
   </script>
 </body>
 </html>
