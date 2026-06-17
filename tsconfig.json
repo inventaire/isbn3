@@ -7,15 +7,12 @@
     "types": ["node"],
     "strict": true,
     "noUncheckedIndexedAccess": false,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "dist",
-    "rootDir": "src",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    // tsdown handles bundling, declarations and source maps; tsc is type-check only.
+    "noEmit": true
   },
-  "include": ["src"]
+  "include": ["src", "test", "scripts", "benchmark", "tsdown.config.ts"]
 }

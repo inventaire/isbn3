@@ -17,7 +17,7 @@ const params = new URLSearchParams({
 
 const getFileUrl = async (): Promise<string> => {
   const res = await fetch(url, { method: 'POST', body: params })
-  const body = await res.json()
+  const body = (await res.json()) as { result: { filename: string; value: string } }
   const { filename, value } = body.result
   return `${domain}/download_range/${value}/${filename}`
 }
