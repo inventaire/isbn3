@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+import audit from '../audit.js'
+import parse from '../parse.js'
+import type { ISBN } from '../types.js'
+
+const [rawIsbn, rawFormat] = process.argv.slice(2)
+
+const output = (message = '', code = 0): never => {
+  if (code === 0) process.stdout.write(message)
+  else process.stderr.write(message)
+  process.exit(code)
+}
+
+const outputFormatIfExisting = (data: ISBN, key: keyof ISBN): void => {
+  const value = data[key]
+  if (value != null) {
+    output(String(value))
+  } else {
+    console.error(`${key} not found`, data)
+    process.exit(1)
+  }
+}
+
+if (!rawIsbn || rawIsbn.length === 0) {
+  output(`isbn <isbn> <format>
+
+Valid ISBN input examples:
+- 9781491574317
+- 978-1-4915-7431-7
+- 978-1491574317
+- isbn:9781491574317
+- 9781-hello-491574317
+
+Formats:
+- h: hyphen
+- n: no hyphen
+- 13: ISBN-13 without hyphen
+- 13h: ISBN-13 with hyphen (default)
+- 10: ISBN-10 without hyphen
+- 10h: ISBN-10 with hyphen
+- prefix, group, publisher, article, check, check10, check13: output ISBN part value
+- data: output all this data as JSON`)
+}
+
+const format = rawFormat || '13h'
+const source = rawIsbn
+const isbn = rawIsbn.replace(/[^\dX]/g, '')
+const data = parse(isbn)
+
+if (data) {
+  if (format === '13') outputFormatIfExisting(data, 'isbn13')
+  else if (format === '10') outputFormatIfExisting(data, 'isbn10')
+  else if (format === '13h') outputFormatIfExisting(data, 'isbn13h')
+  else if (format === '10h') outputFormatIfExisting(data, 'isbn10h')
+  else if (data[format as keyof ISBN]) output(String(data[format as keyof ISBN]))
+  else if (format === 'h') {
+    if (data.isIsbn13) outputFormatIfExisting(data, 'isbn13h')
+    else outputFormatIfExisting(data, 'isbn10h')
+  } else if (format === 'n') {
+    if (data.isIsbn13) outputFormatIfExisting(data, 'isbn13')
+    else outputFormatIfExisting(data, 'isbn10')
+  } else if (format === 'data' || format === 'd') {
+    data.source = source
+    output(`${JSON.stringify(data, null, 2)}\n`)
+  } else if (format === 'audit' || format === 'a') {
+    output(`${JSON.stringify(audit(isbn), null, 2)}\n`)
+  } else {
+    output('unknown format', 1)
+  }
+} else {
+  output('invalid ISBN', 1)
+}

@@ -1,7 +1,8 @@
 {
   "name": "isbn3",
   "description": "ISBN utils: parse, validate, format, audit",
-  "version": "2.0.8",
+  "version": "3.0.0",
+  "type": "module",
   "authors": [
     "Hetappi <hetappi.pm@gmail.com>",
     "Tadas S. <tadas@yoyo.lt>",
@@ -13,61 +14,51 @@
     "type": "git",
     "url": "git://github.com/inventaire/isbn3.git"
   },
-  "main": "./isbn.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
-    "isbn": "./bin/isbn",
-    "isbn-audit": "./bin/isbn-audit",
-    "isbn-checksum": "./bin/isbn-checksum"
+    "isbn": "./dist/bin/isbn.js",
+    "isbn-audit": "./dist/bin/isbn-audit.js",
+    "isbn-checksum": "./dist/bin/isbn-checksum.js"
   },
   "scripts": {
-    "test": "mocha",
-    "lint": "standard",
-    "update-groups": "./scripts/update_groups.js",
-    "update-dist": "./scripts/update_dist.sh",
-    "update-toc": "./scripts/update_toc.sh",
-    "benchmark": "./benchmark/run.js",
-    "prepublishOnly": "./scripts/prepublish.sh",
-    "postpublish": "./scripts/postpublish.sh"
+    "build": "tsdown",
+    "test": "tsx --test test/*.test.ts",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "format": "biome format --write",
+    "typecheck": "tsc --noEmit",
+    "update-groups": "tsx scripts/update_groups.ts",
+    "benchmark": "tsx benchmark/run.ts",
+    "prepublishOnly": "npm run build"
   },
   "files": [
-    "isbn.js",
-    "isbn.d.ts",
-    "lib",
-    "bin",
-    "scripts",
+    "dist",
     "CHANGELOG.md"
   ],
-  "types": "isbn.d.ts",
   "engines": {
-    "node": ">= 6.4.0"
+    "node": ">=18"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.10",
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "^8.0.0",
-    "browserify": "^16.5.0",
-    "mocha": "^6.2.1",
-    "node-fetch": "^2.6.0",
-    "should": "^13.2.3",
-    "standard": "^10.0.2",
-    "uglify-js": "^3.6.1",
-    "xml2js": "^0.4.16"
-  },
-  "standard": {
-    "ignore": [
-      "dist"
-    ],
-    "globals": [
-      "it",
-      "describe"
-    ]
+    "@biomejs/biome": "^2.0.0",
+    "@types/node": "^22.19.21",
+    "@types/xml2js": "^0.4.14",
+    "tsdown": "^0.22.3",
+    "tsx": "^4.0.0",
+    "typescript": "^6.0.3",
+    "xml2js": "^0.6.2"
   },
   "bugs": {
     "url": "https://github.com/inventaire/isbn3/issues"
   },
   "directories": {
-    "lib": "lib",
+    "lib": "src",
     "test": "test"
   },
   "keywords": [
@@ -78,6 +69,8 @@
     "parse",
     "audit",
     "publisher",
-    "checksum"
+    "checksum",
+    "esm",
+    "typescript"
   ]
 }
