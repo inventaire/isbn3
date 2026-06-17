@@ -11,7 +11,6 @@ export default defineConfig([
     fixedExtension: false,
     dts: true,
     clean: true,
-    sourcemap: true,
   },
   {
     // CLIs are executed with `node` directly, so ship them as ESM only.
@@ -25,6 +24,5 @@ export default defineConfig([
     target: 'node18',
     fixedExtension: false,
     dts: false,
-    sourcemap: true,
   },
 ])
