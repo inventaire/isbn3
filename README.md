@@ -328,12 +328,22 @@ The difference is mainly due to the [generation of a map of groups in `isbn3`](h
 
 ## Development
 
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for local setup, common commands, and debugging examples.
+
 ### Test Suite
 
-To run the lint/test suite use:
+To run the test suite use:
 
 ```sh
 npm test
+```
+
+### Contributor Scripts
+
+The publish scripts stay unchanged, and there is a cross-platform contributor alias for rebuilding the local browser bundle on Windows, Linux, and macOS:
+
+```sh
+npm run dev:update-dist
 ```
 
 ### Update Groups data
